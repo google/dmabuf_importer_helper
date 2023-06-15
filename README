@@ -1,0 +1,3 @@
+Dmabuf Importer Helper is a kernel module that the userspace processes can use
+to import a dmabuf. The dmabuf can be imported to a PCIe device using the device
+domain, bus, device and function identity.
