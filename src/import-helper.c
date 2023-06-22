@@ -333,4 +333,5 @@ module_init(import_helper_dev_init);
 module_exit(import_helper_dev_exit);
 
 MODULE_AUTHOR("Samiullah Khawaja <skhawaja@google.com>");
+MODULE_IMPORT_NS(DMA_BUF);
 MODULE_LICENSE("GPL");
