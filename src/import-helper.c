@@ -333,5 +333,7 @@ module_init(import_helper_dev_init);
 module_exit(import_helper_dev_exit);
 
 MODULE_AUTHOR("Samiullah Khawaja <skhawaja@google.com>");
+#ifdef MODULE_IMPORT_NS
 MODULE_IMPORT_NS(DMA_BUF);
+#endif
 MODULE_LICENSE("GPL");
