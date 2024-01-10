@@ -1,3 +1,24 @@
+/*
+ * Copyright 2024 Google LLC
+ * Author: Samiullah Khawaja
+ *
+ * This file is part of Dmabuf Import Helper
+ *
+ * Dmabuf Import Helper is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Dmabuf Import Helper is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Dmabuf Import Helper. If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 #ifndef _DRIVERS_GOOGLE_DMA_BUF_IMPORT_HELPER_H_
 #define _DRIVERS_GOOGLE_DMA_BUF_IMPORT_HELPER_H_
 

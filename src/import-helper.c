@@ -1,3 +1,24 @@
+/*
+ * Copyright 2024 Google LLC
+ * Author: Samiullah Khawaja
+ *
+ * This file is part of Dmabuf Import Helper
+ *
+ * Dmabuf Import Helper is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * Dmabuf Import Helper is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Dmabuf Import Helper. If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -51,7 +72,9 @@ static void release_dmabuf_import(struct dmabuf_import *imp)
 	if (imp->dbuf_attach)
 		(void)dma_buf_detach(imp->dbuf, imp->dbuf_attach);
 	dma_buf_put(imp->dbuf);
-	pci_dev_put(imp->pdev);
+
+	if (imp->pdev)
+		pci_dev_put(imp->pdev);
 }
 
 static struct dmabuf_import* get_dmabuf_import_locked(
@@ -76,10 +99,9 @@ static int import_helper_map(struct import_helper_context *ctx,
 	struct import_helper_map hmap;
 	struct dmabuf_import *imp;
 
-        ret = copy_from_user(&hmap,
-                             (void*)arg, sizeof(hmap));
-	if (ret < 0) {
-		pr_err("Failed to copy user args: %d", ret);
+        if(copy_from_user(&hmap,
+                             (void*)arg, sizeof(hmap))) {
+		pr_err("Failed to copy user args");
 		return -EFAULT;
         }
 
@@ -122,7 +144,6 @@ static int import_helper_map(struct import_helper_context *ctx,
 		goto failed_import_cleanup;
 	}
 
-	imp->pdev = pdev;
 	imp->attach_handle = hmap.attach_handle;
 	hmap.iovecs_count = imp->sgt->nents;
 
@@ -132,6 +153,9 @@ static int import_helper_map(struct import_helper_context *ctx,
 		goto failed_import_cleanup;
 	}
 
+	imp->pdev = pdev;
+	/* attach handle is not checked here, if there is a duplicate then the
+	 * last one will be used. */
 	mutex_lock(&ctx->lock);
 	list_add(&imp->node, &ctx->dmabufs);
 	mutex_unlock(&ctx->lock);
@@ -154,8 +178,7 @@ static int import_helper_unmap(struct import_helper_context *ctx,
         struct import_helper_unmap param;
         struct dmabuf_import *imp;
 
-        ret = copy_from_user(&param, (void*)arg, sizeof(param));
-        if (ret < 0) {
+        if (copy_from_user(&param, (void*)arg, sizeof(param))) {
 		pr_err("Failed to copy user args");
                 return -EFAULT;
 	}
@@ -187,8 +210,7 @@ static int import_helper_get_iovecs(struct import_helper_context *ctx,
         struct dmabuf_import *imp;
         struct scatterlist *sg;
 
-        ret = copy_from_user(&get_iovecs, (void*)arg, sizeof(get_iovecs));
-        if (ret < 0) {
+        if (copy_from_user(&get_iovecs, (void*)arg, sizeof(get_iovecs))) {
                 pr_err("Failed to copy ioctl arg");
                 return -EFAULT;
         }
@@ -286,13 +308,12 @@ static int import_helper_release(struct inode *inode, struct file *filep)
 		return -EINVAL;
 
 	filep->private_data = NULL;
-	mutex_lock(&ctx->lock);
 	list_for_each_entry_safe(imp, imp2, &ctx->dmabufs, node) {
 		list_del(&imp->node);
 		release_dmabuf_import(imp);
 		kfree(imp);
 	}
-	mutex_unlock(&ctx->lock);
+	kfree(ctx);
 	return 0;
 }
 
