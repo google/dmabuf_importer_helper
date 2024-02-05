@@ -1,0 +1,8 @@
+PACKAGE_NAME="dmabuf-import-helper"
+PACKAGE_VERSION="#MODULE_VERSION#"
+BUILT_MODULE_NAME[0]="import-helper"
+MAKE[0]="make -C ${kernel_source_dir} M=${dkms_tree}/${PACKAGE_NAME}/${PACKAGE_VERSION}/build"
+CLEAN="make -C ${kernel_source_dir} M=${dkms_tree}/${PACKAGE_NAME}/${PACKAGE_VERSION}/build clean"
+AUTOINSTALL=yes
+AUTOLOAD=yes
+DEST_MODULE_LOCATION[0]=/extra

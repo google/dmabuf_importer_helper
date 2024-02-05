@@ -1,0 +1,8 @@
+Source: dmabuf-import-helper
+Maintainer: Samiullah Khawaja <skhawaja@google.com>
+Build-Depends: dkms
+
+Package: dmabuf-import-helper
+Architecture: all
+Depends: ${misc:Depends}
+Description: DKMS source for the Dmabuf Import Helper Kernel Module

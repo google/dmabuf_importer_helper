@@ -1,0 +1,15 @@
+dmabuf-import-helper (1.1) unstable; urgency=low
+  * Use GPL2 text in headers
+  * Prepare the source for opensourcing
+
+ -- Samiullah Khawaja <skhawaja@google.com>  Thu, 11 Jan 2024 19:45:21 +0000
+
+dmabuf-import-helper (1.0) unstable; urgency=low
+  * Add support to generate the image file
+  * Only use IMPORT_NS if it is defined
+  * Add support to generate dkms tarball package
+  * Add dkms build support
+  * Add dmabuf importer helper out-of-tree module
+
+ -- skhawaja <skhawaja@google.com>  Fri, 30 Jun 2023 17:57:35 +0000
+
